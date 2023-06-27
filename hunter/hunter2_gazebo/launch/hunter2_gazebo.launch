@@ -8,7 +8,7 @@
   </include>
   <!-- <include file="$(find hunter2_control)/launch/hunter2_contol.launch" ns="/"/> -->
 
-  <include file="$(find hunter2_control)/launch/hunter2_v_contol.launch" />
+  <include file="$(find hunter2_control)/launch/hunter2_v_contol_joy.launch" />
   <!-- urdf xml robot description loaded on the Parameter Server, converting the xacro into a proper urdf file-->
   <!-- <param name="robot_description" command="$(find xacro)/xacro '$(find hunter2_gazebo)/xacro/hunter2_base.xacro'" /> -->
   <param name="robot_description" command="$(find xacro)/xacro '$(find hunter2_base)/urdf/hunter2_base_gazebo.xacro'" />

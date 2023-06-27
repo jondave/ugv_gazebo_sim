@@ -11,8 +11,8 @@ ackermann_steering_controller:
     front_steer: 'front_steer_joint'
 
     # Geometry
-    wheel_separation_h: 0.650
-    wheel_radius: 0.165
+    wheel_separation_h: 0.65 #0.60986
+    wheel_radius: 0.165 #0.1
 
     # Odometry calibration and tuning
     wheel_separation_h_multiplier: 1.0  # default: 1.0
@@ -27,8 +27,8 @@ ackermann_steering_controller:
     base_frame_id: 'base_link'
 
     # Transform from odom -> base_link
-    enable_odom_tf: true
-    odom_frame_id: '/ackermann_steering_controller/odom'
+    enable_odom_tf: false # true
+    odom_frame_id: '/odom' # 'ackermann_steering_controller/odom' # in noetic remove first / from frame name
 
     # Set to false if the motor driver provides velocity data. 
     estimate_velocity_from_position: true

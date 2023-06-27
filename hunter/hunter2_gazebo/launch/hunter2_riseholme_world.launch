@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="world_name" default="$(find husky_gazebo)/worlds/rasberry/riseholme_polytunnel.world"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/> <!-- world_name is wrt GAZEBO_RESOURCE_PATH environment variable -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+  <!-- <include file="$(find hunter2_control)/launch/hunter2_contol.launch" ns="/"/> -->
+
+  <include file="$(find hunter2_control)/launch/hunter2_v_contol_joy.launch" />
+  <!-- urdf xml robot description loaded on the Parameter Server, converting the xacro into a proper urdf file-->
+  <!-- <param name="robot_description" command="$(find xacro)/xacro '$(find hunter2_gazebo)/xacro/hunter2_base.xacro'" /> -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find hunter2_base)/urdf/hunter2_with_sensors/hunter2_base_gazebo.xacro'" />
+  <!-- <param name="robot_description" command="cat $(find hunter2_base)/urdf/hunter2_base.urdf"/> -->
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="hunter_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model hunter2_base -z 0.05"
+    respawn="false" />
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+    <rosparam command="load" file="$(find gofar_navigation)/config/localization/ekf_local_hunter.yaml" />
+  </node>
+  
+  <!-- realsense point cloud to laser scan and merge the two laser scans to one topic -->
+  <include file="$(find gofar_navigation)/launch/topological_navigation/realsense_pointclouid_to_laserscan.launch" />
+
+</launch>
+

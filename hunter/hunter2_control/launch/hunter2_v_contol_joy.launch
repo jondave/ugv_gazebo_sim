@@ -1,0 +1,28 @@
+<launch>
+
+    <!-- Load controller parameters -->
+    <rosparam command="load" file="$(find hunter2_control)/config/ctrl_ackermann_steering_controller.yaml" />
+    <rosparam command="load" file="$(find hunter2_control)/config/ctrl_gains.yaml" />
+    <rosparam command="load" file="$(find hunter2_control)/config/ctrl_joint_state_publisher.yaml" />
+    <rosparam command="load" file="$(find hunter2_control)/config/ctrl_steer_bot_hardware_gazebo.yaml" />
+
+    <!-- Spawn the controllers -->
+    <node pkg="controller_manager" type="spawner" name="controller_spawner"
+        args="joint_state_publisher ackermann_steering_controller"  output="screen" respawn="false" />
+   
+    <!-- Launch the robot state publisher -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" > <!-- in noetic use type="robot_state_publisher" and not type="state_publisher"-->
+        <param name="publish_frequency" value="50.0"/>
+    </node>
+
+    <rosparam command="load" file="$(find hunter2_control)/config/teleop_logitech.yaml" /> <!-- if using 8bit do controller use - teleop_8bitdo.yaml -->
+    <node pkg="joy" type="joy_node" name="joy_node" />
+    <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy">
+        <remap from="cmd_vel" to="joy_teleop/cmd_vel" />
+    </node>
+
+    <node pkg="twist_mux" type="twist_mux" name="twist_mux">
+        <rosparam command="load" file="$(find hunter2_control)/config/twist_mux.yaml" />
+        <remap from="cmd_vel_out" to="ackermann_steering_controller/cmd_vel"/>
+    </node>
+</launch>
